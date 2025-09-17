@@ -1,0 +1,7 @@
+flask
+requests
+beautifulsoup4
+lxml
+fake-useragent
+playwright
+chromium
