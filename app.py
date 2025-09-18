@@ -641,7 +641,7 @@ tr:hover td{background:#11151f}
 tr.flash td { background-color: #2c3a1e !important; transition: background-color 0.5s ease; }
 .chart-row{display:none;}
 .chart-row.visible{display:table-row;}
-.chart-container{padding:1rem;background:#0c0e12;}
+.chart-container{padding:1rem;background:#0c0e12; position: relative; height: 600px; width: 100%;}
 #toast-container{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:10px;align-items:flex-end;}
 .toast{padding:12px 20px;border-radius:.5rem;color:#fff;background:#2a2f3a;box-shadow:0 4px 12px rgba(0,0,0,.3);opacity:0;transform:translateX(100%);transition:all .3s ease-in-out;font-size:.9rem;}
 .toast.show{opacity:1;transform:translateX(0);}
@@ -784,7 +784,7 @@ async function toggleChart(btn, suspectId, force_refresh = false) {
     const show = !isVisible || force_refresh;
 
     if (show) {
-        chartRow.classList.add('visible');
+        if (!isVisible) chartRow.classList.add('visible');
         setTimeout(async () => {
             if(chartInstances[suspectId]) chartInstances[suspectId].destroy();
             document.getElementById(`chart-container-${suspectId}`).innerHTML = '<p class="small">Loading chart data...</p><canvas id="chart-' + suspectId + '"></canvas>';
@@ -808,12 +808,16 @@ async function toggleChart(btn, suspectId, force_refresh = false) {
                     { label: 'Downvotes', data: downvotesData, borderColor: '#ef4444', tension: 0.1, yAxisID: 'y1' },
                     { label: 'Ads', data: adsData, borderColor: '#f97316', tension: 0.1, yAxisID: 'y1' }
                 ]},
-                options: { scales: { 
-                    y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { maxTicksLimit: 11 } },
-                    y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, ticks: { stepSize: 1 }, grid: { drawOnChartArea: false } }
-                } }
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        y: { type: 'linear', display: true, position: 'left', beginAtZero: true, ticks: { maxTicksLimit: 11 } },
+                        y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, ticks: { stepSize: 1 }, grid: { drawOnChartArea: false } }
+                    } 
+                }
             });
-        }, 0);
+        }, 10);
     } else {
         chartRow.classList.remove('visible');
     }
